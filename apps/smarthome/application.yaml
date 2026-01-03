@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR-USERNAME/smarthome-gitops.git
+    repoURL: https://github.com/guylavian/smarthome.git
     targetRevision: HEAD
     path: base/smarthome
   destination:
