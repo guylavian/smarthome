@@ -1,0 +1,5 @@
+passwordfile
+ca.crt
+tls.crt
+tls.key
+!*.example

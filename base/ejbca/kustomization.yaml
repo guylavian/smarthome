@@ -1,9 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ejbca
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - namespace.yaml
-  - mariadb-secret.yaml
   - mariadb-pvc.yaml
   - mariadb-deployment.yaml
   - mariadb-service.yaml
@@ -11,3 +12,7 @@ resources:
   - ejbca-deployment.yaml
   - ejbca-service.yaml
   - ejbca-ingress.yaml
+secretGenerator:
+  - name: mariadb-secret
+    envs:
+      - mariadb-secret.env.example

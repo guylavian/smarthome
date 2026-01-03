@@ -18,9 +18,36 @@ spec:
         image: homeassistant/home-assistant:2024.1
         ports:
         - containerPort: 8123
+          name: http
         env:
         - name: TZ
           value: "Asia/Jerusalem"
+        resources:
+          requests:
+            cpu: 150m
+            memory: 384Mi
+          limits:
+            cpu: 500m
+            memory: 768Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+              - ALL
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 15
         volumeMounts:
         - name: config
           mountPath: /config

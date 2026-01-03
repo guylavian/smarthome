@@ -18,15 +18,54 @@ spec:
         image: eclipse-mosquitto:2.0
         ports:
         - containerPort: 1883
+          name: mqtt
+        - containerPort: 8883
+          name: mqtt-tls
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
         volumeMounts:
         - name: config
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
         - name: data
           mountPath: /mosquitto/data
+        - name: auth
+          mountPath: /mosquitto/config/passwordfile
+          subPath: passwordfile
+        - name: tls
+          mountPath: /mosquitto/certs
+          readOnly: true
+        livenessProbe:
+          tcpSocket:
+            port: mqtt
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: mqtt
+          initialDelaySeconds: 5
+          periodSeconds: 10
       volumes:
       - name: config
         configMap:
           name: mosquitto-config
       - name: data
         emptyDir: {}
+      - name: auth
+        secret:
+          secretName: mosquitto-auth
+      - name: tls
+        secret:
+          secretName: mosquitto-tls
