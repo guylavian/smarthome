@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homeassistant
+  namespace: smarthome
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # Note: SSL certificates won't work with .local domains
+    # Remove these annotations if using without SSL
+    # cert-manager.io/cluster-issuer: letsencrypt-staging
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+  - host: homeassistant.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: homeassistant
+            port:
+              number: 8123
+  # TLS disabled for .local domains
+  # tls:
+  # - hosts:
+  #   - homeassistant.local
+  #   secretName: homeassistant-tls
