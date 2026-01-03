@@ -57,11 +57,12 @@ providers:
       enabled: true
 
 # Additional configuration
-additionalArguments:
-  # Enable SSL redirect globally
-  - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-  - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-  - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+additionalArguments: []
+  # Disabled global HTTPS redirect for .local domains
+  # To enable HTTPS redirect globally when using real domains, uncomment:
+  # - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+  # - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+  # - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
 
 # Resources
 resources:
