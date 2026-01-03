@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    # Use Traefik ingress controller
+    kubernetes.io/ingress.class: traefik
+    # Enable automatic SSL certificate from Let's Encrypt
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    # Optional: Traefik specific annotations
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  tls:
+  - hosts:
+    - grafana.yourdomain.com  # CHANGE THIS TO YOUR DOMAIN!
+    secretName: grafana-tls
+  rules:
+  - host: grafana.yourdomain.com  # CHANGE THIS TO YOUR DOMAIN!
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000

@@ -1,0 +1,70 @@
+# Traefik Ingress Controller Configuration
+
+# Enable dashboard
+ingressRoute:
+  dashboard:
+    enabled: true
+    # Access dashboard at http://traefik.yourdomain.com/dashboard/
+
+# Ports configuration
+ports:
+  web:
+    port: 80
+    expose: true
+    exposedPort: 80
+  websecure:
+    port: 443
+    expose: true
+    exposedPort: 443
+    # Enable TLS
+    tls:
+      enabled: true
+  metrics:
+    port: 9100
+    expose: false
+
+# Service configuration
+service:
+  enabled: true
+  type: LoadBalancer
+
+# Enable access logs
+logs:
+  general:
+    level: INFO
+  access:
+    enabled: true
+
+# Enable metrics for Prometheus
+metrics:
+  prometheus:
+    enabled: true
+    addRoutersLabels: true
+    addServicesLabels: true
+
+# Providers
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowCrossNamespace: true
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: true
+
+# Additional configuration
+additionalArguments:
+  # Enable SSL redirect globally
+  - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+  - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+  - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+
+# Resources
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
