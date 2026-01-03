@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodered
+  namespace: smarthome
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 1880
+  selector:
+    app: nodered
