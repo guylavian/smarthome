@@ -5,18 +5,13 @@ metadata:
   namespace: monitoring
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-    # Note: SSL disabled for .local domain
-    # To enable SSL with real domain, uncomment below and update domain:
-    # cert-manager.io/cluster-issuer: letsencrypt-staging
-    # traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: smarthome-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
-  # TLS disabled for .local domains
-  # To enable with real domain, uncomment and update:
-  # tls:
-  # - hosts:
-  #   - grafana.yourdomain.com
-  #   secretName: grafana-tls
+  tls:
+  - hosts:
+    - grafana.local
+    secretName: grafana-tls
   rules:
   - host: grafana.local
     http:

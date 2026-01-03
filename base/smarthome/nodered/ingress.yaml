@@ -5,8 +5,13 @@ metadata:
   namespace: smarthome
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    cert-manager.io/cluster-issuer: smarthome-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
+  tls:
+  - hosts:
+    - nodered.local
+    secretName: nodered-tls
   rules:
   - host: nodered.local
     http:

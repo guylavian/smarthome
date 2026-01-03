@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: smarthome-root-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: SmartHome Root CA
+  secretName: smarthome-root-ca-secret
+  duration: 87600h # 10 years
+  privateKey:
+    algorithm: RSA
+    size: 4096
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  subject:
+    organizations:
+      - SmartHome
+    countries:
+      - IL
+    organizationalUnits:
+      - Home Infrastructure
