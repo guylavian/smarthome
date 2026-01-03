@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ejbca
+  namespace: ejbca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ejbca
+  template:
+    metadata:
+      labels:
+        app: ejbca
+    spec:
+      containers:
+      - name: ejbca
+        image: keyfactor/ejbca-ce:latest
+        env:
+        - name: DATABASE_JDBC_URL
+          value: "jdbc:mysql://mariadb:3306/ejbca?characterEncoding=UTF-8"
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: MYSQL_USER
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: MYSQL_PASSWORD
+        - name: TLS_SETUP_ENABLED
+          value: "simple"
+        - name: INITIAL_ADMIN
+          value: ";PublicAccessAuthenticationToken:TRANSPORT_ANY;"
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8442
+          name: https-public
+        - containerPort: 8443
+          name: https-admin
+        volumeMounts:
+        - name: data
+          mountPath: /mnt/persistent
+        livenessProbe:
+          httpGet:
+            path: /ejbca/publicweb/healthcheck/ejbcahealth
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ejbca/publicweb/healthcheck/ejbcahealth
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: ejbca-data

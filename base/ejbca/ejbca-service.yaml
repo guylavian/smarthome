@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ejbca
+  namespace: ejbca
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  - port: 8442
+    targetPort: 8442
+    name: https-public
+  - port: 8443
+    targetPort: 8443
+    name: https-admin
+  selector:
+    app: ejbca
