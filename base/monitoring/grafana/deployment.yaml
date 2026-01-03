@@ -18,13 +18,47 @@ spec:
         image: grafana/grafana:latest
         env:
         - name: GF_SECURITY_ADMIN_USER
-          value: admin
+          valueFrom:
+            secretKeyRef:
+              name: grafana-admin
+              key: GF_SECURITY_ADMIN_USER
         - name: GF_SECURITY_ADMIN_PASSWORD
-          value: admin
+          valueFrom:
+            secretKeyRef:
+              name: grafana-admin
+              key: GF_SECURITY_ADMIN_PASSWORD
         - name: GF_INSTALL_PLUGINS
           value: grafana-clock-panel,grafana-simple-json-datasource
         ports:
         - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
         volumeMounts:
         - name: storage
           mountPath: /var/lib/grafana
