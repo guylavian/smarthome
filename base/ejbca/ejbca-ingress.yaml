@@ -16,6 +16,13 @@ spec:
   - host: ejbca.local
     http:
       paths:
+      - path: /ejbca
+        pathType: Prefix
+        backend:
+          service:
+            name: ejbca
+            port:
+              number: 8080
       - path: /
         pathType: Prefix
         backend:
