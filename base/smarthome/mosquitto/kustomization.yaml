@@ -1,6 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - configmap.yaml
   - deployment.yaml
   - service.yaml
+  - networkpolicy.yaml
+secretGenerator:
+  - name: mosquitto-auth
+    files:
+      - passwordfile=./passwordfile.example
+  - name: mosquitto-tls
+    files:
+      - ca.crt=./ca.crt.example
+      - tls.crt=./tls.crt.example
+      - tls.key=./tls.key.example
