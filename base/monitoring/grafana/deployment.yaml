@@ -27,7 +27,7 @@ spec:
             secretKeyRef:
               name: grafana-admin
               key: GF_SECURITY_ADMIN_PASSWORD
-        - name: GF_INSTALL_PLUGINS
+        - name: GF_PLUGINS_PREINSTALL
           value: grafana-clock-panel,grafana-simple-json-datasource
         ports:
         - containerPort: 3000
@@ -64,6 +64,8 @@ spec:
           mountPath: /var/lib/grafana
         - name: datasources
           mountPath: /etc/grafana/provisioning/datasources
+        - name: tmp
+          mountPath: /tmp
       volumes:
       - name: storage
         persistentVolumeClaim:
@@ -71,3 +73,5 @@ spec:
       - name: datasources
         configMap:
           name: grafana-datasources
+      - name: tmp
+        emptyDir: {}
